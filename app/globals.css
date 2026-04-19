@@ -1,0 +1,128 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  
+  /* fan℃ Brand Colors */
+  --color-fan-warm-50: #fff7ed;
+  --color-fan-warm-100: #ffedd5;
+  --color-fan-warm-200: #fed7aa;
+  --color-fan-warm-300: #fdba74;
+  --color-fan-warm-400: #fb923c;
+  --color-fan-warm-500: #f97316;
+  --color-fan-warm-600: #ea580c;
+  --color-fan-warm-700: #c2410c;
+  --color-fan-warm-800: #9a3412;
+  --color-fan-warm-900: #7c2d12;
+  
+  --color-fan-hot-50: #fef2f2;
+  --color-fan-hot-100: #fee2e2;
+  --color-fan-hot-200: #fecaca;
+  --color-fan-hot-300: #fca5a5;
+  --color-fan-hot-400: #f87171;
+  --color-fan-hot-500: #ef4444;
+  --color-fan-hot-600: #dc2626;
+  --color-fan-hot-700: #b91c1c;
+  --color-fan-hot-800: #991b1b;
+  --color-fan-hot-900: #7f1d1d;
+
+  /* Semantic colors for light mode */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --color-card: #ffffff;
+  --color-card-foreground: #171717;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #171717;
+  --color-primary: #f97316;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #171717;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-accent: #f5f5f5;
+  --color-accent-foreground: #171717;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e5e5;
+  --color-input: #e5e5e5;
+  --color-ring: #f97316;
+  
+  /* Temperature color scale (used by Logo & FanTemperatureMeter) */
+  --temp-cold: #60a5fa;
+  --temp-cool: #34d399;
+  --temp-warm: #fb923c;
+  --temp-hot: #f97316;
+  --temp-fire: #ef4444;
+
+  /* Base radius */
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+/* Temperature Gradient Utilities */
+.temperature-gradient {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%);
+}
+
+.temperature-gradient-text {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse Animation for Temperature Meter */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.4));
+  }
+  50% {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 16px rgba(249, 115, 22, 0.6));
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* Smooth hover transitions */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
+}

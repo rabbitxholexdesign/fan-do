@@ -1,0 +1,85 @@
+TC番号,カテゴリ,テスト名,前提条件,手順,期待結果
+TC-AUTH-01,認証,新規ユーザー登録,未ログイン状態,"/signup にアクセスし、メールアドレス・パスワードを入力して「登録する」をクリック",確認メールが送信され「確認メールを送信しました」と表示される
+TC-AUTH-02,認証,ログイン（正常）,登録済みアカウントあり,"/login でメールアドレス・パスワードを入力し「ログイン」をクリック",/mypage へリダイレクトされる
+TC-AUTH-03,認証,ログイン（誤パスワード）,未ログイン状態,誤パスワードで「ログイン」をクリック,エラーメッセージが表示され画面遷移しない
+TC-AUTH-04,認証,パスワードリセット,未ログイン状態,"/reset-password でメールアドレスを入力し送信 → メールのリンクをクリック → /reset-password/confirm で新パスワードを入力",パスワードが変更され /login にリダイレクト
+TC-AUTH-05,認証,ログアウト,ログイン済み,ヘッダー or サイドバーの「ログアウト」をクリック,セッションが破棄され /login へリダイレクト
+TC-AUTH-06,認証,未認証ページアクセス,未ログイン状態,"/mypage・/dashboard・/admin に直接アクセス",それぞれ /login へリダイレクトされる
+TC-PUB-01,公開ページ,トップページ表示,,/ にアクセス,ヒーロー・特集タレントセクションが表示される
+TC-PUB-02,公開ページ,タレント一覧ページ,,/talents にアクセス,status=active のタレントのみ表示される
+TC-PUB-03,公開ページ,タレント一覧 検索・フィルター,,キーワード入力 or 都道府県選択,条件に合致するタレントのみ絞り込まれる
+TC-PUB-04,公開ページ,タレント詳細ページ,,/talents/[id] にアクセス（activeなタレントIDを使用）,タレント情報・プラン一覧・サロンタブ・お気に入りボタンが表示される
+TC-PUB-05,公開ページ,非公開タレントの直接アクセス,,status≠active のタレントIDで /talents/[id] にアクセス,404ページが表示される
+TC-PUB-06,公開ページ,お気に入りボタン（未ログイン）,未ログイン,タレント詳細のハートボタンをクリック,ログインページへリダイレクトされる
+TC-PUB-07,公開ページ,お気に入りボタン（ログイン済み）,ログイン済み,ハートボタンをクリック → 再度クリック,1回目: ハートが塗りつぶされる / 2回目: 空に戻る
+TC-PUB-08,公開ページ,地域ページ一覧,,/region にアクセス,都道府県グループ一覧が表示され タレント数0の都道府県はリンク無効
+TC-PUB-09,公開ページ,都道府県別タレント一覧,,タレント数が1以上の都道府県カードをクリック,/region/[都道府県名] が開き該当タレントが表示される
+TC-PUB-10,公開ページ,存在しない都道府県URL,,/region/存在しない都道府県 にアクセス,404ページが表示される
+TC-PUB-11,公開ページ,利用規約・プライバシーポリシー,,"/terms・/privacy・/legal/commerce にアクセス",各ページのコンテンツが表示される
+TC-PUB-12,公開ページ,タレント別特定商取引法ページ,,/talents/[id]/legal にアクセス,legal_notices のデータとプラン一覧が表示される
+TC-PAY-01,決済,支援プラン選択ページ表示,ログイン済み・対象タレントのサポーターでない,/talents/[id]/support にアクセス,activeなプラン一覧が表示される
+TC-PAY-02,決済,Stripeチェックアウト遷移（サブスク）,Stripeテストキー設定済み・ログイン済み,月額プランを選択し「Stripeで申し込む」をクリック,Stripe Checkoutページ（テストモード）に遷移する
+TC-PAY-03,決済,Stripeチェックアウト遷移（買い切り）,,billing_cycle=onetime のプランで申し込み,Stripe Checkoutページ（payment mode）に遷移する
+TC-PAY-04,決済,テスト決済 成功,Stripe CLIでWebhookリスニング中,テストカード 4242 4242 4242 4242 で決済完了,"/talents/[id]/support/success に遷移し成功メッセージ表示 / subscriptions に active レコード追加 / fanc_scores にボーナスポイント記録"
+TC-PAY-05,決済,既存サポーターの再申し込みブロック,すでに対象タレントのアクティブサポーター,/talents/[id]/support で申し込みボタンをクリック,「すでにサロンに参加しています」エラーが表示される
+TC-PAY-06,決済,Webhook署名検証失敗,,/api/webhooks/stripe に不正な署名でPOSTリクエスト,400エラーが返る
+TC-MY-01,マイページ,マイページ ホーム,ログイン済み,/mypage にアクセス,プロフィール情報・fan℃スコア・応援中タレント数が表示される
+TC-MY-02,マイページ,支援中プラン一覧,,/mypage/subscriptions にアクセス,subscriptions テーブルのアクティブなプランが表示される
+TC-MY-03,マイページ,プラン解約ボタン,,「解約する」ボタンをクリック,確認ダイアログが表示され承認後 Stripe Customer Portal へ誘導される
+TC-MY-04,マイページ,fan℃履歴,,/mypage/fanc-history にアクセス,fanc_scores の履歴一覧・トータルスコアが表示される
+TC-MY-05,マイページ,/mypage/history リダイレクト,,/mypage/history に直接アクセス,/mypage/fanc-history へ自動リダイレクト
+TC-MY-06,マイページ,お気に入り一覧,,/mypage/favorites にアクセス,ハートを押したタレントの一覧が表示される
+TC-MY-07,マイページ,通知 受信トレイ,,/mypage/notifications にアクセス,notifications テーブルのユーザー宛通知が新着順に表示される
+TC-MY-08,マイページ,通知 既読化,,未読通知をクリック,is_read=true に更新されバッジ数が減る
+TC-MY-09,マイページ,全通知既読,,「すべて既読にする」ボタンをクリック,すべての通知が既読になる
+TC-MY-10,マイページ,支払い履歴,,/mypage/billing にアクセス,アクティブなサブスク一覧・月額合計・Customer Portalリンクが表示される
+TC-MY-11,マイページ,プロフィール編集,,/mypage/profile で表示名を変更し保存,users テーブルが更新され変更後の名前が反映される
+TC-MY-12,マイページ,fan℃バッジ・ランク表示,,/mypage/badges にアクセス,トータルスコアに応じたランク（ブロンズ/シルバー/ゴールド）と獲得済みバッジが表示される
+TC-MY-13,マイページ,バッジ未獲得状態の表示,サブスクなし・スコア0のユーザー,/mypage/badges にアクセス,「まだバッジを獲得していません」と表示され全バッジが未獲得扱い
+TC-SAL-01,サロン,タイムライン表示,ログイン済み・アクティブサポーター,/community/[talentId] にアクセス,community_posts の投稿が表示される
+TC-SAL-02,サロン,非サポーターのサロンアクセス,ログイン済み・非サポーター,/community/[talentId] にアクセス,「サポーターのみアクセス可」の表示 or ロック画面が表示される
+TC-SAL-03,サロン,投稿へのいいね,,投稿のハートボタンをクリック,community_reactions にレコードが挿入されカウントが1増える
+TC-SAL-04,サロン,いいね取り消し,,すでにいいね済みのハートボタンをクリック,community_reactions からレコードが削除されカウントが1減る
+TC-SAL-05,サロン,コメント表示,,「コメントを見る」をクリック,community_comments からコメントが遅延ロードされる
+TC-SAL-06,サロン,コメント投稿,,コメント入力欄にテキストを入力し Enter or 送信ボタン,community_comments にレコードが挿入され一覧に追加される
+TC-SAL-07,サロン,グループチャット,,/community/[talentId]/chat にアクセスしメッセージ送信,Supabase Realtimeで全サポーターにリアルタイム表示される
+TC-SAL-08,サロン,限定コンテンツ一覧,,/community/[talentId]/content にアクセス,community_posts の限定コンテンツが表示される
+TC-SAL-09,サロン,ファン一覧,,/community/[talentId]/fans にアクセス,subscriptions から対象タレントのアクティブサポーター一覧が表示される
+TC-DASH-01,ダッシュボード,ダッシュボードホーム,タレントとして登録済み（active）でログイン,/dashboard にアクセス,月間収益・サポーター数・fan℃スコアのサマリーが表示される
+TC-DASH-02,ダッシュボード,サポーター一覧,,/dashboard/supporters にアクセス,subscriptions から該当タレントのサポーター一覧が検索・プランフィルター付きで表示される
+TC-DASH-03,ダッシュボード,プラン一覧,,/dashboard/plans にアクセス,support_plans から該当タレントのプランが表示され公開/非公開切り替えが可能
+TC-DASH-04,ダッシュボード,プラン新規作成,,/dashboard/plans/new でフォームを入力し送信,support_plans にレコードが INSERT される
+TC-DASH-05,ダッシュボード,活動報告 投稿,,/dashboard/reports/new でフォームを入力し投稿,reports テーブルに INSERT され一覧に表示される
+TC-DASH-06,ダッシュボード,活動報告 削除,,活動報告一覧の「削除」をクリック,reports テーブルから削除される
+TC-DASH-07,ダッシュボード,収益・出金ページ,,/dashboard/revenue にアクセス,月次収益・プラン別内訳が support_plans + subscriptions から計算され表示される
+TC-DASH-08,ダッシュボード,アナリティクス,,/dashboard/analytics にアクセス,サポーター推移・収益グラフが表示される
+TC-DASH-09,ダッシュボード,サロン管理,,/dashboard/salon にアクセス,サロン設定・投稿管理UIが表示される
+TC-DASH-10,ダッシュボード,お知らせ配信,SUPABASE_SERVICE_ROLE_KEY 設定済み,"/dashboard/announcements にアクセスし タイトル・本文を入力して「〇名に送信する」をクリック",アクティブサポーター全員の notifications テーブルに type=news のレコードが挿入される
+TC-DASH-11,ダッシュボード,お知らせ配信（サポーター0人）,アクティブサポーターが0人,/dashboard/announcements にアクセス,送信ボタンが無効化され「サポーターがいません」と表示される
+TC-DASH-12,ダッシュボード,設定ページ,,/dashboard/settings にアクセス,タレントプロフィール編集フォームが表示される
+TC-REG-01,タレント審査,タレント登録申請,ログイン済み（タレント未登録）,/talent-register でフォームを入力し申請,talents テーブルに status=pending_review で登録される
+TC-REG-02,タレント審査,管理者 申請一覧表示,管理者権限でログイン,/admin/applications にアクセス,pending_review / pending_kyc / pending_final の申請がタブ別に表示される
+TC-REG-03,タレント審査,管理者 KYC審査,,/admin/applications/[id]/kyc にアクセスし「承認」をクリック,talents.status が pending_kyc → pending_final に更新される
+TC-REG-04,タレント審査,管理者 銀行口座確認,,/admin/applications/[id]/bank にアクセスし「確認済み」をクリック,bank_accounts.verified=true に更新され監査ログに記録される
+TC-REG-05,タレント審査,管理者 特商法確認,,/admin/applications/[id]/legal にアクセスし「確認済み」をクリック,legal_notices.verified=true に更新される
+TC-REG-06,タレント審査,管理者 最終承認（条件満たす）,KYC・口座・法的情報がすべて確認済み,/admin/applications/[id]/approve で「承認・公開」をクリック,talents.status=active に更新されタレントが公開される
+TC-REG-07,タレント審査,管理者 最終承認（条件未満）,KYC・口座・法的情報のいずれかが未確認,/admin/applications/[id]/approve にアクセス,「承認・公開」ボタンが無効化されている
+TC-REG-08,タレント審査,管理者 審査却下,,申請詳細で「却下」をクリック,talents.status=rejected に更新される
+TC-ADM-01,管理者,管理者ダッシュボード,users.role=admin でログイン,/admin にアクセス,管理者向けサマリーが表示される
+TC-ADM-02,管理者,非管理者ユーザーのアクセス拒否,一般ユーザーでログイン,/admin に直接アクセス,403 or ホームへリダイレクト
+TC-ADM-03,管理者,タレント一覧,,/admin/talents にアクセス,全ステータスのタレント一覧が表示される
+TC-ADM-04,管理者,ユーザー一覧,,/admin/users にアクセス,全ユーザーの一覧が表示される
+TC-ADM-05,管理者,支払い一覧,,/admin/payments にアクセス,subscriptions テーブルの決済情報一覧が表示される
+TC-ADM-06,管理者,監査ログ,,/admin/audit-log にアクセス,管理者操作の履歴が新着順に表示される
+TC-ADM-07,管理者,レポート・レビュー,,"/admin/reports・/admin/reviews にアクセス",通報・レビュー一覧が表示される
+TC-WH-01,Webhook,checkout.session.completed（サブスク）,,Stripe CLIで checkout.session.completed イベントを送信（mode: subscription）,subscriptions に status=active のレコードが UPSERT される / fanc_scores にボーナスが記録される
+TC-WH-02,Webhook,checkout.session.completed（買い切り）,,checkout.session.completed イベント（mode: payment）を送信,subscriptions に stripe_subscription_id=payment_intent_id・current_period_end=null で UPSERT
+TC-WH-03,Webhook,customer.subscription.updated,,customer.subscription.updated イベントを送信,subscriptions.status と期間が更新される
+TC-WH-04,Webhook,customer.subscription.deleted,,customer.subscription.deleted イベントを送信,subscriptions.status=cancelled に更新される
+TC-SEC-01,セキュリティ,RLS 他ユーザーデータへのアクセス,,別ユーザーのIDを指定してSupabaseクライアントから fanc_scores を取得,データが返らない（RLSによるブロック）
+TC-SEC-02,セキュリティ,未認証API呼び出し,,セッションなしで /api/checkout・/api/announcements にPOSTリクエスト,401エラーが返る
+TC-SEC-03,セキュリティ,他タレントへのお知らせ配信試行,,自分が所有しない talentId で /api/announcements にPOST,404エラーが返る
+TC-SEC-04,セキュリティ,Stripeキー未設定時の動作,.env.local の STRIPE_SECRET_KEY を未設定,支援申し込みフォームから申し込み,503エラーと設定ガイドメッセージが表示される
+TC-UI-01,UI,モバイル表示（スマートフォン）,,幅375pxでトップ・タレント詳細・マイページをチェック,レイアウト崩れなく表示されボトムナビが機能する
+TC-UI-02,UI,ダッシュボード モバイルヘッダー,,/dashboard をスマートフォン幅で表示,ハンバーガー/ドロップダウンでタレント切り替えが可能
+TC-UI-03,UI,ダークモード（OS設定）,,OSをダークモードに設定しアクセス,カラーテーマが変わり文字・背景が読みやすい状態を維持
