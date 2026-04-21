@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Inter, Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 
-const geistSans = Geist({ 
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans"
+  variable: "--font-inter",
+  display: "swap",
 })
 
-const geistMono = Geist_Mono({ 
+const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
-  variable: "--font-mono"
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-noto",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#fafafa',
+  themeColor: '#0ea5e9',
   width: 'device-width',
   initialScale: 1,
 }
@@ -29,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ja" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
       <body className="font-sans antialiased min-h-screen bg-background text-foreground">
         {children}
       </body>

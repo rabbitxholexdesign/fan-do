@@ -4,7 +4,6 @@ import Link from "next/link"
 import { LogoutButton } from "@/components/logout-button"
 import { useState, useEffect } from "react"
 import { Logo } from "@/components/logo"
-import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
@@ -16,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, LayoutDashboard, LogOut, Shield } from "lucide-react"
+import { User, LayoutDashboard, LogOut, Shield, Menu } from "lucide-react"
 
 interface UserInfo {
   displayName: string | null
@@ -32,33 +31,35 @@ export function Header({ variant = "default", className }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     async function fetchUser() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        setIsLoading(false)
-        return
-      }
+      if (!user) { setIsLoading(false); return }
       const { data } = await supabase
         .from("users")
         .select("display_name, role")
         .eq("id", user.id)
         .single()
       if (data) {
-        setUserInfo({
-          displayName: data.display_name,
-          role: data.role as UserInfo["role"],
-        })
+        setUserInfo({ displayName: data.display_name, role: data.role as UserInfo["role"] })
       }
       setIsLoading(false)
     }
     fetchUser()
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   const navigation = [
     { name: "タレントを探す", href: "/talents" },
+    { name: "地域から探す", href: "/region" },
     { name: "fan℃とは", href: "/about" },
     { name: "使い方", href: "/how-to-use" },
   ]
@@ -68,13 +69,16 @@ export function Header({ variant = "default", className }: HeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full",
-        variant === "default" && "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border",
-        variant === "transparent" && "bg-transparent",
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        variant === "default" && scrolled
+          ? "bg-white/95 backdrop-blur shadow-sm border-b border-slate-100"
+          : variant === "default"
+          ? "bg-white/80 backdrop-blur border-b border-transparent"
+          : "bg-transparent",
         className
       )}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 md:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
@@ -87,7 +91,7 @@ export function Header({ variant = "default", className }: HeaderProps) {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-200"
               >
                 {item.name}
               </Link>
@@ -97,20 +101,20 @@ export function Header({ variant = "default", className }: HeaderProps) {
           {/* Desktop Auth Area */}
           <div className="hidden md:flex items-center gap-3">
             {isLoading ? (
-              <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+              <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse" />
             ) : userInfo ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 px-2">
+                  <button className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-sky-50 transition-colors">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                      <AvatarFallback className="bg-sky-100 text-sky-600 text-sm font-semibold">
                         {initial}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium hidden sm:inline">
+                    <span className="text-sm font-medium text-slate-700 hidden sm:inline">
                       {userInfo.displayName ?? "ユーザー"}
                     </span>
-                  </Button>
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
@@ -146,12 +150,18 @@ export function Header({ variant = "default", className }: HeaderProps) {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/login">ログイン</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/signup">新規登録</Link>
-                </Button>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors px-4 py-2"
+                >
+                  ログイン
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-sky-500 text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-sky-600 transition-all duration-200 shadow-sm shadow-sky-500/20"
+                >
+                  新規登録
+                </Link>
               </>
             )}
           </div>
@@ -159,34 +169,25 @@ export function Header({ variant = "default", className }: HeaderProps) {
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" aria-label="メニューを開く">
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                  />
-                </svg>
-              </Button>
+              <button
+                className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+                aria-label="メニューを開く"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[350px]">
               <div className="flex flex-col gap-6 mt-8">
                 {userInfo && (
-                  <div className="flex items-center gap-3 pb-4 border-b">
+                  <div className="flex items-center gap-3 pb-5 border-b">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-primary/10 text-primary">
+                      <AvatarFallback className="bg-sky-100 text-sky-600 font-semibold">
                         {initial}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium text-sm">{userInfo.displayName ?? "ユーザー"}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="font-medium text-sm text-slate-800">{userInfo.displayName ?? "ユーザー"}</p>
+                      <p className="text-xs text-slate-500">
                         {userInfo.role === "talent_owner" ? "タレント運営者"
                           : userInfo.role === "admin" ? "管理者"
                           : "ファン"}
@@ -194,50 +195,58 @@ export function Header({ variant = "default", className }: HeaderProps) {
                     </div>
                   </div>
                 )}
-                <nav className="flex flex-col gap-4">
+                <nav className="flex flex-col gap-1">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="text-lg font-medium text-foreground hover:text-accent transition-colors py-2"
+                      className="text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition-colors py-2.5 px-3 rounded-lg"
                     >
                       {item.name}
                     </Link>
                   ))}
                 </nav>
-                <div className="border-t border-border pt-6 flex flex-col gap-3">
+                <div className="border-t pt-5 flex flex-col gap-3">
                   {userInfo ? (
                     <>
-                      <Button variant="outline" asChild className="w-full">
-                        <Link href="/mypage" onClick={() => setIsOpen(false)}>
-                          マイページ
-                        </Link>
-                      </Button>
+                      <Link
+                        href="/mypage"
+                        onClick={() => setIsOpen(false)}
+                        className="w-full text-center border border-slate-200 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-full hover:bg-slate-50 transition-colors"
+                      >
+                        マイページ
+                      </Link>
                       {(userInfo.role === "talent_owner" || userInfo.role === "admin") && (
-                        <Button variant="outline" asChild className="w-full">
-                          <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                            ダッシュボード
-                          </Link>
-                        </Button>
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsOpen(false)}
+                          className="w-full text-center border border-slate-200 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-full hover:bg-slate-50 transition-colors"
+                        >
+                          ダッシュボード
+                        </Link>
                       )}
-                      <LogoutButton className="w-full flex justify-center items-center gap-2 px-4 py-2 rounded-md border text-sm font-medium text-destructive border-destructive/30 hover:bg-destructive/10 transition-colors">
+                      <LogoutButton className="w-full flex justify-center items-center gap-2 px-4 py-2.5 rounded-full border border-red-200 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors">
                         <LogOut className="h-4 w-4" />
                         ログアウト
                       </LogoutButton>
                     </>
                   ) : (
                     <>
-                      <Button variant="outline" asChild className="w-full">
-                        <Link href="/login" onClick={() => setIsOpen(false)}>
-                          ログイン
-                        </Link>
-                      </Button>
-                      <Button asChild className="w-full">
-                        <Link href="/signup" onClick={() => setIsOpen(false)}>
-                          新規登録
-                        </Link>
-                      </Button>
+                      <Link
+                        href="/login"
+                        onClick={() => setIsOpen(false)}
+                        className="w-full text-center border border-slate-200 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-full hover:bg-slate-50 transition-colors"
+                      >
+                        ログイン
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={() => setIsOpen(false)}
+                        className="w-full text-center bg-sky-500 text-white text-sm font-medium px-4 py-2.5 rounded-full hover:bg-sky-600 transition-colors"
+                      >
+                        新規登録
+                      </Link>
                     </>
                   )}
                 </div>

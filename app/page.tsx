@@ -3,8 +3,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { TalentCard, TalentGrid, type TalentData } from "@/components/talent-card"
 import { FanTemperatureMeter } from "@/components/fan-temperature-meter"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { ArrowRight } from "lucide-react"
 
 const featuredTalents: TalentData[] = [
   {
@@ -142,77 +141,97 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-foreground text-background">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-primary blur-3xl" />
-        </div>
-        <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
+      {/* ── Hero Section ── */}
+      <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-sky-50 via-white to-sky-100/50 overflow-hidden">
+        {/* Decorative orbs */}
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-sky-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-sky-300/15 rounded-full blur-3xl pointer-events-none" />
+        {/* Dot grid */}
+        <div className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(circle,#0ea5e9_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+        <div className="container mx-auto px-4 md:px-8 relative z-10 py-24 md:py-36">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-primary/20 text-primary border-primary/30 text-sm px-4 py-1">
+            <p className="text-sky-500 text-sm font-semibold tracking-widest uppercase mb-5 animate-fade-in-up">
               地域タレント応援プラットフォーム
-            </Badge>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
+            </p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-slate-800 leading-tight mb-6 animate-fade-in-up [animation-delay:100ms]">
               その地域の
               <br />
-              <span className="text-primary">ファン</span>になろう
+              <span className="text-sky-500">ファン</span>になろう
             </h1>
-            <p className="text-lg md:text-xl text-background/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up [animation-delay:200ms]">
               その地域のファンになる人を、その地域に注ぐ心の温度で、まちの魅力をみんなで循環させる。
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="text-base px-8">
-                <Link href="/talents">タレントを探す</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="text-base px-8 border-background/30 text-background hover:bg-background/10">
-                <Link href="/signup">タレント登録</Link>
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up [animation-delay:300ms]">
+              <Link
+                href="/talents"
+                className="bg-sky-500 text-white px-8 py-4 rounded-full font-medium hover:bg-sky-600 transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-xl hover:shadow-sky-500/30 hover:-translate-y-0.5"
+              >
+                タレントを探す
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-white text-sky-500 px-8 py-4 rounded-full font-medium border-2 border-sky-500 hover:bg-sky-50 transition-all duration-300"
+              >
+                タレント登録
+              </Link>
             </div>
           </div>
         </div>
+
+        {/* Bottom wave */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none pointer-events-none">
+          <svg className="relative block w-full h-12 md:h-16" viewBox="0 0 1440 64" preserveAspectRatio="none">
+            <path fill="#ffffff" d="M0,32 C360,64 1080,0 1440,32 L1440,64 L0,64 Z" />
+          </svg>
+        </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-20 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">fan℃ とは</h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              fan℃は、地域の「ひと・もの・こと」をタレントとして捉え、ファンが応援・支援できるファンコミュニティ創出型プラットフォームです。
-              応援の熱量を<strong className="text-foreground">fan℃（温度）</strong>として数値化・可視化することで、地域ブランディングからファンディングへのサイクルを生み出します。
+      {/* ── About / Features Section ── */}
+      <section className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center mb-16">
+            <p className="text-sky-500 text-sm font-semibold tracking-widest uppercase mb-3">ABOUT</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-5">fan℃ とは</h2>
+            <p className="text-slate-600 text-lg leading-relaxed max-w-2xl mx-auto">
+              地域の「ひと・もの・こと」をタレントとして捉え、ファンが応援・支援できるファンコミュニティ創出型プラットフォームです。応援の熱量を
+              <strong className="text-slate-800">fan℃（温度）</strong>として数値化・可視化することで、地域ブランディングからファンディングへのサイクルを生み出します。
             </p>
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center p-8 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-colors"
+                className="bg-white rounded-2xl p-8 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-slate-200/60 transition-all duration-300 hover:-translate-y-1 border border-slate-100 group"
               >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center mb-6 text-sky-500 group-hover:bg-sky-500 group-hover:text-white transition-colors duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">{feature.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Talent Showcase */}
-      <section className="py-20 md:py-24 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+      {/* ── Talent Showcase ── */}
+      <section className="py-24 md:py-32 bg-slate-50">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">注目のタレント</h2>
-              <p className="text-muted-foreground">全国各地で活躍する地域タレントを応援しよう</p>
+              <p className="text-sky-500 text-sm font-semibold tracking-widest uppercase mb-3">TALENTS</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">注目のタレント</h2>
+              <p className="text-slate-600">全国各地で活躍する地域タレントを応援しよう</p>
             </div>
-            <Button variant="outline" asChild>
-              <Link href="/talents">すべて見る →</Link>
-            </Button>
+            <Link
+              href="/talents"
+              className="text-sky-500 font-medium hover:text-sky-600 transition-colors inline-flex items-center gap-2 group whitespace-nowrap"
+            >
+              すべて見る
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           <TalentGrid>
             {featuredTalents.map((talent) => (
@@ -222,26 +241,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Regional Fan Temperature */}
-      <section className="py-20 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">地域別 fan℃ 温度計</h2>
-            <p className="text-muted-foreground text-lg">
+      {/* ── Regional Fan Temperature ── */}
+      <section className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="text-center mb-16">
+            <p className="text-sky-500 text-sm font-semibold tracking-widest uppercase mb-3">REGIONS</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">地域別 fan℃ 温度計</h2>
+            <p className="text-slate-600 text-lg max-w-xl mx-auto">
               全国各地の応援熱量をリアルタイムで可視化。あなたの地域の温度は？
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
             {regionalData.map((region) => (
               <Link
                 key={region.name}
                 href={`/talents?region=${encodeURIComponent(region.name)}`}
-                className="flex flex-col items-center gap-3 p-6 rounded-2xl border border-border hover:border-primary/50 hover:bg-muted/30 transition-all group"
+                className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-sky-200 hover:-translate-y-1 transition-all duration-300 group"
               >
                 <FanTemperatureMeter temperature={region.temperature} size="md" animate={false} />
                 <div className="text-center">
-                  <p className="font-medium text-sm group-hover:text-primary transition-colors">{region.name}</p>
-                  <p className="text-xs text-muted-foreground">{region.count}タレント</p>
+                  <p className="font-medium text-sm text-slate-700 group-hover:text-sky-600 transition-colors">{region.name}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{region.count}タレント</p>
                 </div>
               </Link>
             ))}
@@ -249,27 +269,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How to Support */}
-      <section className="py-20 md:py-24 bg-foreground text-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">3つの支援方法</h2>
-            <p className="text-background/70 text-lg">
-              あなたのスタイルで地域を応援しよう
-            </p>
+      {/* ── How to Support ── */}
+      <section className="py-24 md:py-32 bg-gradient-to-br from-sky-500 to-sky-700 relative overflow-hidden">
+        {/* Decorative orb */}
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-300/20 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <p className="text-sky-200 text-sm font-semibold tracking-widest uppercase mb-3">HOW TO</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">3つの支援方法</h2>
+            <p className="text-sky-100 text-lg">あなたのスタイルで地域を応援しよう</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {howToSupport.map((item, index) => (
               <div key={index} className="relative">
-                <div className="text-7xl font-bold text-background/5 absolute -top-4 -left-2 select-none">
+                <div className="text-8xl font-bold text-white/5 absolute -top-4 -left-2 select-none leading-none">
                   {item.step}
                 </div>
-                <div className="relative pt-6">
-                  <Badge className="mb-4 bg-primary/20 text-primary border-primary/30 text-xs">
+                <div className="relative pt-8 bg-white/10 rounded-2xl p-8 backdrop-blur-sm border border-white/20">
+                  <span className="inline-block bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
                     {item.badge}
-                  </Badge>
-                  <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
-                  <p className="text-background/60 leading-relaxed">{item.description}</p>
+                  </span>
+                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                  <p className="text-sky-100 leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -277,23 +300,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+      {/* ── CTA Section ── */}
+      <section className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <p className="text-sky-500 text-sm font-semibold tracking-widest uppercase mb-4">GET STARTED</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-5">
               あなたの地域の<br />タレントを応援しよう
             </h2>
-            <p className="text-muted-foreground text-lg mb-10">
+            <p className="text-slate-600 text-lg mb-10 leading-relaxed">
               無料でアカウントを作成して、全国各地の魅力あるタレントと繋がりましょう。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="text-base px-10">
-                <Link href="/signup">無料で始める</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="text-base px-10">
-                <Link href="/talents">タレントを見る</Link>
-              </Button>
+              <Link
+                href="/signup"
+                className="bg-sky-500 text-white px-10 py-4 rounded-full font-medium hover:bg-sky-600 transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-xl hover:shadow-sky-500/30 hover:-translate-y-0.5"
+              >
+                無料で始める
+              </Link>
+              <Link
+                href="/talents"
+                className="bg-white text-sky-500 px-10 py-4 rounded-full font-medium border-2 border-sky-500 hover:bg-sky-50 transition-all duration-300"
+              >
+                タレントを見る
+              </Link>
             </div>
           </div>
         </div>

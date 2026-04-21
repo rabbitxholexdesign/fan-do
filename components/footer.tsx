@@ -31,7 +31,7 @@ export function Footer({ className }: FooterProps) {
       { name: "特定商取引法に基づく表記", href: "/legal/commerce" },
     ],
   }
-  
+
   const social = [
     {
       name: "X (Twitter)",
@@ -61,15 +61,17 @@ export function Footer({ className }: FooterProps) {
       ),
     },
   ]
-  
+
   return (
-    <footer className={cn("bg-muted/30 border-t border-border", className)}>
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12">
+    <footer className={cn("bg-slate-900 text-slate-400", className)}>
+      <div className="container mx-auto px-4 md:px-8 py-16 md:py-20">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-12">
           {/* Logo and Description */}
           <div className="col-span-2 md:col-span-1">
-            <Logo size="md" />
-            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+            <div className="brightness-0 invert opacity-90">
+              <Logo size="md" />
+            </div>
+            <p className="mt-5 text-sm text-slate-400 leading-relaxed">
               地域の「ひと・もの・こと」を
               <br />
               応援するファンコミュニティ
@@ -81,7 +83,7 @@ export function Footer({ className }: FooterProps) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-slate-500 hover:text-sky-400 transition-colors duration-200"
                   aria-label={item.name}
                 >
                   {item.icon}
@@ -89,16 +91,16 @@ export function Footer({ className }: FooterProps) {
               ))}
             </div>
           </div>
-          
+
           {/* Navigation Links */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">サービス</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">サービス</h3>
             <ul className="space-y-3">
               {navigation.main.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-slate-400 hover:text-sky-400 transition-colors duration-200"
                   >
                     {item.name}
                   </Link>
@@ -106,15 +108,15 @@ export function Footer({ className }: FooterProps) {
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="text-sm font-semibold mb-4">タレント向け</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">タレント向け</h3>
             <ul className="space-y-3">
               {navigation.talent.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-slate-400 hover:text-sky-400 transition-colors duration-200"
                   >
                     {item.name}
                   </Link>
@@ -122,15 +124,15 @@ export function Footer({ className }: FooterProps) {
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="text-sm font-semibold mb-4">会社情報</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">会社情報</h3>
             <ul className="space-y-3">
               {navigation.company.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-slate-400 hover:text-sky-400 transition-colors duration-200"
                   >
                     {item.name}
                   </Link>
@@ -138,15 +140,15 @@ export function Footer({ className }: FooterProps) {
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="text-sm font-semibold mb-4">法的情報</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">法的情報</h3>
             <ul className="space-y-3">
               {navigation.legal.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-slate-400 hover:text-sky-400 transition-colors duration-200"
                   >
                     {item.name}
                   </Link>
@@ -155,13 +157,13 @@ export function Footer({ className }: FooterProps) {
             </ul>
           </div>
         </div>
-        
-        {/* Copyright */}
-        <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
+
+        {/* Bottom Bar */}
+        <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-slate-500">
             &copy; {new Date().getFullYear()} fan℃ All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-slate-600">
             Made with warmth in Japan
           </p>
         </div>

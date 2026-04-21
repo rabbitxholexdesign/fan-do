@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
+  --font-sans: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
-  
+
   /* fan℃ Brand Colors */
   --color-fan-warm-50: #fff7ed;
   --color-fan-warm-100: #ffedd5;
@@ -15,7 +15,7 @@
   --color-fan-warm-700: #c2410c;
   --color-fan-warm-800: #9a3412;
   --color-fan-warm-900: #7c2d12;
-  
+
   --color-fan-hot-50: #fef2f2;
   --color-fan-hot-100: #fee2e2;
   --color-fan-hot-200: #fecaca;
@@ -27,27 +27,27 @@
   --color-fan-hot-800: #991b1b;
   --color-fan-hot-900: #7f1d1d;
 
-  /* Semantic colors for light mode */
+  /* Semantic colors — RealAIze Design System (sky blue primary) */
   --color-background: #ffffff;
-  --color-foreground: #171717;
+  --color-foreground: #1e293b;
   --color-card: #ffffff;
-  --color-card-foreground: #171717;
+  --color-card-foreground: #1e293b;
   --color-popover: #ffffff;
-  --color-popover-foreground: #171717;
-  --color-primary: #f97316;
+  --color-popover-foreground: #1e293b;
+  --color-primary: #0ea5e9;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #f5f5f5;
-  --color-secondary-foreground: #171717;
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #737373;
-  --color-accent: #f5f5f5;
-  --color-accent-foreground: #171717;
+  --color-secondary: #f8fafc;
+  --color-secondary-foreground: #1e293b;
+  --color-muted: #f8fafc;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f97316;
+  --color-accent-foreground: #ffffff;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
-  --color-border: #e5e5e5;
-  --color-input: #e5e5e5;
-  --color-ring: #f97316;
-  
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #0ea5e9;
+
   /* Temperature color scale (used by Logo & FanTemperatureMeter) */
   --temp-cold: #60a5fa;
   --temp-cool: #34d399;
@@ -56,14 +56,14 @@
   --temp-fire: #ef4444;
 
   /* Base radius */
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
   }
-  
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -84,18 +84,9 @@
 
 /* Pulse Animation for Temperature Meter */
 @keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0%   { transform: scale(1);    opacity: 1;   }
+  50%  { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1);    opacity: 1;   }
 }
 
 @keyframes breathe {
@@ -109,20 +100,21 @@
   }
 }
 
-.animate-pulse-ring {
-  animation: pulse-ring 2s ease-in-out infinite;
+/* Fade-in-up animation (RealAIze Design System) */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(2rem); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
-.animate-breathe {
-  animation: breathe 3s ease-in-out infinite;
-}
+.animate-pulse-ring  { animation: pulse-ring 2s ease-in-out infinite; }
+.animate-breathe     { animation: breathe   3s ease-in-out infinite; }
+.animate-fade-in-up  { animation: fade-in-up 0.6s ease forwards; }
 
-/* Smooth hover transitions */
+/* Hover lift utility */
 .hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(14, 165, 233, 0.15);
 }
