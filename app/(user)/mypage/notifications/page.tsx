@@ -22,12 +22,12 @@ interface Notification {
 }
 
 const TYPE_CONFIG: Record<string, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
-  community_post: { label: "サロン更新", bg: "bg-orange-100", text: "text-orange-700", icon: MessageCircle },
-  support:        { label: "支援",       bg: "bg-sky-100",    text: "text-sky-700",    icon: Heart },
-  billing:        { label: "お支払い",   bg: "bg-emerald-100",text: "text-emerald-700",icon: CreditCard },
-  news:           { label: "お知らせ",   bg: "bg-violet-100", text: "text-violet-700", icon: Megaphone },
-  kyc:            { label: "審査",       bg: "bg-amber-100",  text: "text-amber-700",  icon: Bell },
-  system:         { label: "システム",   bg: "bg-slate-100",  text: "text-slate-600",  icon: Bell },
+  community_post: { label: "サロン更新", bg: "bg-[#FFF6ED]", text: "text-[#B93815]", icon: MessageCircle },
+  support:        { label: "支援",       bg: "bg-[#EFF8FF]", text: "text-[#175CD3]", icon: Heart },
+  billing:        { label: "お支払い",   bg: "bg-[#ECFDF3]", text: "text-[#027A48]", icon: CreditCard },
+  news:           { label: "お知らせ",   bg: "bg-[#F4F3FF]", text: "text-[#5925DC]", icon: Megaphone },
+  kyc:            { label: "審査",       bg: "bg-[#FFFAEB]", text: "text-[#B54708]", icon: Bell },
+  system:         { label: "システム",   bg: "bg-[#F2F4F7]", text: "text-[#344054]", icon: Bell },
 }
 
 function timeAgo(dateStr: string): string {
@@ -47,22 +47,18 @@ export default function NotificationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [markingAll, setMarkingAll] = useState(false)
 
-  useEffect(() => {
-    fetchNotifications()
-  }, [])
+  useEffect(() => { fetchNotifications() }, [])
 
   async function fetchNotifications() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setIsLoading(false); return }
-
     const { data } = await supabase
       .from("notifications")
       .select("id, type, title, body, link_url, is_read, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50)
-
     if (data) setNotifications(data as Notification[])
     setIsLoading(false)
   }
@@ -78,13 +74,7 @@ export default function NotificationsPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setMarkingAll(false); return }
-
-    await supabase
-      .from("notifications")
-      .update({ is_read: true })
-      .eq("user_id", user.id)
-      .eq("is_read", false)
-
+    await supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false)
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
     setMarkingAll(false)
   }
@@ -93,38 +83,35 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
-        <p className="text-xs font-semibold text-sky-500 uppercase tracking-widest mb-1">マイページ</p>
-        <h1 className="text-2xl font-bold text-slate-800">通知</h1>
-        <p className="text-slate-500 mt-1">お知らせと通知設定</p>
+        <h1 className="text-2xl font-semibold text-[#101828]">通知</h1>
+        <p className="text-sm text-[#475467] mt-1">お知らせと通知設定</p>
       </div>
 
       <Tabs defaultValue="inbox">
-        <TabsList className="bg-white border border-slate-100 rounded-xl p-1 shadow-sm">
-          <TabsTrigger value="inbox" className="rounded-lg flex items-center gap-2 data-[state=active]:bg-sky-500 data-[state=active]:text-white">
+        <TabsList className="bg-white border border-[#E4E7EC] rounded-lg p-1 shadow-sm">
+          <TabsTrigger value="inbox" className="rounded-md flex items-center gap-2 text-[#475467] data-[state=active]:bg-[#F9FAFB] data-[state=active]:text-[#101828]">
             <Inbox className="h-4 w-4" />
             受信トレイ
             {unreadCount > 0 && (
-              <span className="ml-1 min-w-[1.25rem] h-5 px-1.5 bg-sky-500 data-[state=active]:bg-white data-[state=active]:text-sky-500 text-white text-xs rounded-full flex items-center justify-center">
+              <span className="ml-1 bg-[#F2F4F7] text-[#344054] text-xs font-medium px-1.5 py-0.5 rounded-full border border-[#E4E7EC]">
                 {unreadCount}
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="settings" className="rounded-lg flex items-center gap-2 data-[state=active]:bg-sky-500 data-[state=active]:text-white">
+          <TabsTrigger value="settings" className="rounded-md flex items-center gap-2 text-[#475467] data-[state=active]:bg-[#F9FAFB] data-[state=active]:text-[#101828]">
             <Bell className="h-4 w-4" />
             通知設定
           </TabsTrigger>
         </TabsList>
 
-        {/* 受信トレイ */}
         <TabsContent value="inbox" className="mt-6 space-y-4">
           {unreadCount > 0 && (
             <div className="flex justify-end">
               <button
                 onClick={markAllAsRead}
                 disabled={markingAll}
-                className="flex items-center gap-2 border border-slate-200 text-slate-600 text-sm font-medium px-4 py-2 rounded-full hover:bg-slate-50 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 border border-[#D0D5DD] text-[#344054] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#F9FAFB] transition-colors shadow-sm disabled:opacity-50"
               >
                 <CheckCheck className="h-4 w-4" />
                 すべて既読にする
@@ -133,29 +120,21 @@ export default function NotificationsPage() {
           )}
 
           {isLoading ? (
-            <div className="space-y-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="rounded-2xl bg-white border border-slate-100 h-20 animate-pulse" />
-              ))}
-            </div>
+            <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm px-6 py-12 text-center text-[#475467] text-sm">読み込み中...</div>
           ) : notifications.length === 0 ? (
-            <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 py-16 text-center">
-              <Bell className="h-12 w-12 mx-auto mb-4 text-slate-200" />
-              <p className="text-slate-500">通知はありません</p>
+            <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm py-16 text-center">
+              <Bell className="h-12 w-12 mx-auto mb-4 text-[#D0D5DD]" />
+              <p className="text-[#475467] text-sm">通知はありません</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm overflow-hidden divide-y divide-[#E4E7EC]">
               {notifications.map((n) => {
                 const cfg = TYPE_CONFIG[n.type] ?? TYPE_CONFIG.system
                 const Icon = cfg.icon
                 return (
                   <div
                     key={n.id}
-                    className={`relative rounded-2xl border p-5 transition-all duration-200 ${
-                      n.is_read
-                        ? "bg-white border-slate-100 shadow-sm shadow-slate-200/30"
-                        : "bg-sky-50/50 border-sky-200 shadow-lg shadow-slate-200/50"
-                    }`}
+                    className={`relative p-5 transition-colors ${n.is_read ? "hover:bg-[#F9FAFB]" : "bg-[#F9FAFB]"}`}
                     onClick={() => { if (!n.is_read) markAsRead(n.id) }}
                     role={n.is_read ? undefined : "button"}
                     style={{ cursor: n.is_read ? "default" : "pointer" }}
@@ -164,28 +143,19 @@ export default function NotificationsPage() {
                       <span className="absolute top-4 right-4 h-2 w-2 rounded-full bg-sky-500" />
                     )}
                     <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-xl shrink-0 ${cfg.bg}`}>
+                      <div className={`p-2 rounded-lg shrink-0 ${cfg.bg}`}>
                         <Icon className={`h-4 w-4 ${cfg.text}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cfg.bg} ${cfg.text}`}>
-                            {cfg.label}
-                          </span>
-                          <span className="text-xs text-slate-400">{timeAgo(n.created_at)}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cfg.bg} ${cfg.text}`}>{cfg.label}</span>
+                          <span className="text-xs text-[#667085]">{timeAgo(n.created_at)}</span>
                         </div>
-                        <p className="font-semibold text-sm text-slate-800 mt-1">{n.title}</p>
-                        {n.body && (
-                          <p className="text-sm text-slate-500 mt-0.5 line-clamp-2">{n.body}</p>
-                        )}
+                        <p className="font-medium text-sm text-[#101828] mt-1">{n.title}</p>
+                        {n.body && <p className="text-sm text-[#475467] mt-0.5 line-clamp-2">{n.body}</p>}
                         {n.link_url && (
-                          <Link
-                            href={n.link_url}
-                            className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-600 font-medium mt-1.5 transition-colors"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            詳細を見る
-                            <ExternalLink className="h-3 w-3" />
+                          <Link href={n.link_url} className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700 font-medium mt-1.5 transition-colors" onClick={(e) => e.stopPropagation()}>
+                            詳細を見る <ExternalLink className="h-3 w-3" />
                           </Link>
                         )}
                       </div>
@@ -197,90 +167,71 @@ export default function NotificationsPage() {
           )}
         </TabsContent>
 
-        {/* 通知設定 */}
         <TabsContent value="settings" className="mt-6 space-y-4">
-          <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="font-semibold text-slate-800 flex items-center gap-2">
-                <Bell className="h-5 w-5 text-sky-500" />
-                通知の受け取り
-              </h2>
-              <p className="text-sm text-slate-500 mt-0.5">全体の通知設定を管理します</p>
+          <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#E4E7EC]">
+              <h2 className="font-semibold text-[#101828] flex items-center gap-2"><Bell className="h-5 w-5 text-[#667085]" />通知の受け取り</h2>
+              <p className="text-sm text-[#475467] mt-0.5">全体の通知設定を管理します</p>
             </div>
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="font-medium text-slate-700">すべての通知を受け取る</Label>
-                  <p className="text-sm text-slate-500">
-                    オフにするとすべての通知が停止されます
-                  </p>
-                </div>
-                <Switch defaultChecked />
+            <div className="px-6 py-4 flex items-center justify-between">
+              <div>
+                <Label className="font-medium text-[#101828]">すべての通知を受け取る</Label>
+                <p className="text-sm text-[#475467]">オフにするとすべての通知が停止されます</p>
               </div>
+              <Switch defaultChecked />
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="font-semibold text-slate-800">通知の種類</h2>
-              <p className="text-sm text-slate-500 mt-0.5">種類ごとに通知方法を設定できます</p>
+          <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#E4E7EC]">
+              <h2 className="font-semibold text-[#101828]">通知の種類</h2>
+              <p className="text-sm text-[#475467] mt-0.5">種類ごとに通知方法を設定できます</p>
             </div>
             <div className="px-6 py-4">
-              <div className="grid grid-cols-[1fr_80px_80px] gap-4 text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">
+              <div className="grid grid-cols-[1fr_80px_80px] gap-4 text-xs font-medium text-[#475467] uppercase tracking-wide mb-4">
                 <div />
-                <div className="flex items-center justify-center gap-1">
-                  <Mail className="h-3.5 w-3.5" />メール
-                </div>
-                <div className="flex items-center justify-center gap-1">
-                  <Bell className="h-3.5 w-3.5" />サイト内
-                </div>
+                <div className="flex items-center justify-center gap-1"><Mail className="h-3.5 w-3.5" />メール</div>
+                <div className="flex items-center justify-center gap-1"><Bell className="h-3.5 w-3.5" />サイト内</div>
               </div>
               {[
-                { id: "community", label: "サロン更新", desc: "応援中タレントの新しい投稿", emailDef: true, pushDef: true, icon: MessageCircle, bg: "bg-orange-100", text: "text-orange-600" },
-                { id: "support", label: "支援関連", desc: "支援の完了や更新のお知らせ", emailDef: true, pushDef: true, icon: Heart, bg: "bg-sky-100", text: "text-sky-600" },
-                { id: "billing", label: "お支払い", desc: "請求や決済に関するお知らせ", emailDef: true, pushDef: false, icon: CreditCard, bg: "bg-emerald-100", text: "text-emerald-600" },
-                { id: "news", label: "お知らせ", desc: "fan℃からの重要なお知らせ", emailDef: true, pushDef: false, icon: Megaphone, bg: "bg-violet-100", text: "text-violet-600" },
+                { id: "community", label: "サロン更新", desc: "応援中タレントの新しい投稿", emailDef: true, pushDef: true, icon: MessageCircle, bg: "bg-[#FFF6ED]", text: "text-[#B93815]" },
+                { id: "support", label: "支援関連", desc: "支援の完了や更新のお知らせ", emailDef: true, pushDef: true, icon: Heart, bg: "bg-[#EFF8FF]", text: "text-[#175CD3]" },
+                { id: "billing", label: "お支払い", desc: "請求や決済に関するお知らせ", emailDef: true, pushDef: false, icon: CreditCard, bg: "bg-[#ECFDF3]", text: "text-[#027A48]" },
+                { id: "news", label: "お知らせ", desc: "fan℃からの重要なお知らせ", emailDef: true, pushDef: false, icon: Megaphone, bg: "bg-[#F4F3FF]", text: "text-[#5925DC]" },
               ].map((item) => (
-                <div key={item.id} className="grid grid-cols-[1fr_80px_80px] gap-4 items-center py-4 border-t border-slate-50">
+                <div key={item.id} className="grid grid-cols-[1fr_80px_80px] gap-4 items-center py-4 border-t border-[#F2F4F7]">
                   <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-xl ${item.bg} shrink-0`}>
+                    <div className={`p-2 rounded-lg ${item.bg} shrink-0`}>
                       <item.icon className={`h-4 w-4 ${item.text}`} />
                     </div>
                     <div>
-                      <p className="font-medium text-sm text-slate-800">{item.label}</p>
-                      <p className="text-xs text-slate-400">{item.desc}</p>
+                      <p className="font-medium text-sm text-[#101828]">{item.label}</p>
+                      <p className="text-xs text-[#667085]">{item.desc}</p>
                     </div>
                   </div>
-                  <div className="flex justify-center">
-                    <Switch defaultChecked={item.emailDef} />
-                  </div>
-                  <div className="flex justify-center">
-                    <Switch defaultChecked={item.pushDef} />
-                  </div>
+                  <div className="flex justify-center"><Switch defaultChecked={item.emailDef} /></div>
+                  <div className="flex justify-center"><Switch defaultChecked={item.pushDef} /></div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="font-semibold text-slate-800 flex items-center gap-2">
-                <Mail className="h-5 w-5 text-sky-500" />
-                メール配信
-              </h2>
+          <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#E4E7EC]">
+              <h2 className="font-semibold text-[#101828] flex items-center gap-2"><Mail className="h-5 w-5 text-[#667085]" />メール配信</h2>
             </div>
             <div className="px-6 py-4 space-y-4">
               <div className="flex items-center justify-between py-2">
-                <div className="space-y-0.5">
-                  <Label className="font-medium text-slate-700">ダイジェストメール</Label>
-                  <p className="text-sm text-slate-500">週1回、応援中タレントの活動まとめ</p>
+                <div>
+                  <Label className="font-medium text-[#101828]">ダイジェストメール</Label>
+                  <p className="text-sm text-[#475467]">週1回、応援中タレントの活動まとめ</p>
                 </div>
                 <Switch defaultChecked />
               </div>
-              <div className="flex items-center justify-between py-2 border-t border-slate-50">
-                <div className="space-y-0.5">
-                  <Label className="font-medium text-slate-700">プロモーションメール</Label>
-                  <p className="text-sm text-slate-500">新機能やキャンペーンのお知らせ</p>
+              <div className="flex items-center justify-between py-2 border-t border-[#F2F4F7]">
+                <div>
+                  <Label className="font-medium text-[#101828]">プロモーションメール</Label>
+                  <p className="text-sm text-[#475467]">新機能やキャンペーンのお知らせ</p>
                 </div>
                 <Switch />
               </div>

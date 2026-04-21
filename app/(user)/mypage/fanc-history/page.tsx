@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { FanTemperatureMeter } from "@/components/fan-temperature-meter"
 import { createClient } from "@/lib/supabase/client"
+import { TrendingUp } from "lucide-react"
 
 interface FancEvent {
   id: string
@@ -14,11 +15,11 @@ interface FancEvent {
 }
 
 const ACTION_CONFIG: Record<string, { label: string; bg: string; text: string }> = {
-  subscription:        { label: "サブスク",     bg: "bg-sky-100",    text: "text-sky-700" },
-  sns_share:           { label: "SNSシェア",    bg: "bg-violet-100", text: "text-violet-700" },
-  event_participation: { label: "イベント参加", bg: "bg-emerald-100",text: "text-emerald-700" },
-  community_activity:  { label: "サロン活動",  bg: "bg-orange-100", text: "text-orange-700" },
-  bonus:               { label: "ボーナス",     bg: "bg-amber-100",  text: "text-amber-700" },
+  subscription:        { label: "サブスク",     bg: "bg-[#EFF8FF]", text: "text-[#175CD3]" },
+  sns_share:           { label: "SNSシェア",    bg: "bg-[#F4F3FF]", text: "text-[#5925DC]" },
+  event_participation: { label: "イベント参加", bg: "bg-[#ECFDF3]", text: "text-[#027A48]" },
+  community_activity:  { label: "サロン活動",  bg: "bg-[#FFF6ED]", text: "text-[#B93815]" },
+  bonus:               { label: "ボーナス",     bg: "bg-[#FFFAEB]", text: "text-[#B54708]" },
 }
 
 export default function FancHistoryPage() {
@@ -52,64 +53,80 @@ export default function FancHistoryPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
-        <p className="text-xs font-semibold text-sky-500 uppercase tracking-widest mb-1">マイページ</p>
-        <h1 className="text-2xl font-bold text-slate-800">fan℃履歴</h1>
-        <p className="text-slate-500 mt-1">fan℃スコアの獲得履歴</p>
+        <h1 className="text-2xl font-semibold text-[#101828]">fan℃履歴</h1>
+        <p className="text-sm text-[#475467] mt-1">fan℃スコアの獲得履歴</p>
       </div>
 
       {/* Score Card */}
-      <div className="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-sky-100 shadow-lg shadow-slate-200/50 p-6">
-        <div className="flex items-center gap-8">
+      <div className="bg-white border border-[#E4E7EC] rounded-xl p-6 shadow-sm">
+        <div className="flex items-start gap-4">
           <FanTemperatureMeter temperature={temperature} size="md" />
-          <div>
-            <p className="text-sm text-slate-500 mb-1">トータル fan℃ スコア</p>
-            <p className="text-5xl font-bold text-slate-800">{totalScore.toLocaleString()}</p>
-            <p className="text-sm text-slate-400 mt-1">pt</p>
+          <div className="flex-1">
+            <p className="text-sm text-[#475467]">トータル fan℃ スコア</p>
+            <div className="flex items-baseline gap-2 mt-1">
+              <p className="text-4xl font-semibold text-[#101828]">{totalScore.toLocaleString()}</p>
+              <span className="text-sm text-[#475467]">pt</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 px-2 py-1 bg-[#ECFDF3] rounded-full">
+            <TrendingUp className="w-3 h-3 text-[#027A48]" />
+            <span className="text-xs font-medium text-[#027A48]">累計</span>
           </div>
         </div>
       </div>
 
-      {/* History List */}
-      <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <h2 className="font-semibold text-slate-800">獲得履歴</h2>
-          <p className="text-sm text-slate-400 mt-0.5">最新50件</p>
+      {/* History Table */}
+      <div className="bg-white border border-[#E4E7EC] rounded-xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#E4E7EC]">
+          <h2 className="text-base font-semibold text-[#101828]">獲得履歴</h2>
+          <p className="text-sm text-[#475467] mt-0.5">最新50件</p>
         </div>
-        <div className="divide-y divide-slate-50">
-          {isLoading ? (
-            <div className="px-6 py-12 text-center text-slate-400">読み込み中...</div>
-          ) : events.length === 0 ? (
-            <div className="px-6 py-16 text-center">
-              <div className="text-4xl mb-3">🌡️</div>
-              <p className="text-slate-500">まだ fan℃ の獲得履歴がありません</p>
+
+        {isLoading ? (
+          <div className="px-6 py-12 text-center text-[#475467] text-sm">読み込み中...</div>
+        ) : events.length === 0 ? (
+          <div className="px-6 py-16 text-center">
+            <div className="text-4xl mb-3">🌡️</div>
+            <p className="text-[#475467] text-sm">まだ fan℃ の獲得履歴がありません</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-[#E4E7EC]">
+            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-[#F9FAFB] text-xs font-medium text-[#475467]">
+              <div className="col-span-3">種別</div>
+              <div className="col-span-5">内容</div>
+              <div className="col-span-2">タレント</div>
+              <div className="col-span-1 text-right">獲得</div>
+              <div className="col-span-1 text-right">日付</div>
             </div>
-          ) : (
-            events.map((event) => {
-              const cfg = ACTION_CONFIG[event.action_type] ?? { label: event.action_type, bg: "bg-slate-100", text: "text-slate-600" }
+            {events.map((event) => {
+              const cfg = ACTION_CONFIG[event.action_type] ?? { label: event.action_type, bg: "bg-[#F2F4F7]", text: "text-[#344054]" }
               return (
-                <div key={event.id} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${cfg.bg} ${cfg.text}`}>
+                <div key={event.id} className="grid grid-cols-12 gap-4 px-6 py-3.5 hover:bg-[#F9FAFB] transition-colors items-center">
+                  <div className="col-span-3">
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${cfg.bg} ${cfg.text}`}>
                       {cfg.label}
                     </span>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-700 truncate">
-                        {event.description ?? event.action_type}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {event.talent?.name && `${event.talent.name} · `}
-                        {new Date(event.earned_at).toLocaleDateString("ja-JP")}
-                      </p>
-                    </div>
                   </div>
-                  <span className="text-sky-600 font-bold shrink-0 ml-4">+{event.score}℃</span>
+                  <div className="col-span-5">
+                    <p className="text-sm text-[#101828] truncate">{event.description ?? event.action_type}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-[#475467] truncate">{event.talent?.name ?? "—"}</p>
+                  </div>
+                  <div className="col-span-1 text-right">
+                    <span className="text-sm font-semibold text-sky-600">+{event.score}℃</span>
+                  </div>
+                  <div className="col-span-1 text-right">
+                    <p className="text-xs text-[#667085]">
+                      {new Date(event.earned_at).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" })}
+                    </p>
+                  </div>
                 </div>
               )
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </div>
   )
