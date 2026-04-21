@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 
 interface Subscription {
@@ -19,11 +16,11 @@ const CYCLE_LABELS: Record<string, string> = {
   monthly: "月", quarterly: "3ヶ月", biannual: "半年", yearly: "年", onetime: "買い切り",
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  active: { label: "アクティブ", color: "bg-green-100 text-green-700" },
-  cancelled: { label: "解約済み", color: "bg-gray-100 text-gray-700" },
-  paused: { label: "一時停止中", color: "bg-yellow-100 text-yellow-700" },
-  past_due: { label: "支払い遅延", color: "bg-red-100 text-red-700" },
+const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string }> = {
+  active:    { label: "アクティブ",   bg: "bg-emerald-100", text: "text-emerald-700" },
+  cancelled: { label: "解約済み",     bg: "bg-slate-100",   text: "text-slate-600" },
+  paused:    { label: "一時停止中",   bg: "bg-amber-100",   text: "text-amber-700" },
+  past_due:  { label: "支払い遅延",   bg: "bg-red-100",     text: "text-red-700" },
 }
 
 export default function SubscriptionsPage() {
@@ -67,94 +64,111 @@ export default function SubscriptionsPage() {
   )
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">支援中プラン管理</h1>
-        <p className="text-muted-foreground">現在のサブスクリプションを管理します</p>
+        <p className="text-xs font-semibold text-sky-500 uppercase tracking-widest mb-1">マイページ</p>
+        <h1 className="text-2xl font-bold text-slate-800">支援中プラン管理</h1>
+        <p className="text-slate-500 mt-1">現在のサブスクリプションを管理します</p>
       </div>
 
-      {/* Summary */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">応援中タレント</p>
-            <p className="text-2xl font-bold">{active.length}<span className="text-sm font-normal ml-1">件</span></p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">月換算支援額</p>
-            <p className="text-2xl font-bold">¥{totalMonthly.toLocaleString()}</p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 p-5">
+          <p className="text-sm text-slate-500 mb-1">応援中タレント</p>
+          <p className="text-3xl font-bold text-slate-800">{active.length}
+            <span className="text-base font-normal text-slate-500 ml-1">件</span>
+          </p>
+        </div>
+        <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 p-5">
+          <p className="text-sm text-slate-500 mb-1">月換算支援額</p>
+          <p className="text-3xl font-bold text-slate-800">
+            <span className="text-base font-normal text-slate-500 mr-0.5">¥</span>
+            {totalMonthly.toLocaleString()}
+          </p>
+        </div>
       </div>
 
       {/* Subscription List */}
       {isLoading ? (
-        <div className="text-center py-12 text-muted-foreground">読み込み中...</div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 h-28 animate-pulse" />
+          ))}
+        </div>
       ) : subscriptions.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground space-y-4">
-          <p>支援中のプランがありません</p>
-          <Button asChild>
-            <Link href="/talents">タレントを探す</Link>
-          </Button>
+        <div className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 py-16 text-center">
+          <div className="text-5xl mb-4">🌿</div>
+          <p className="text-slate-500 mb-4">支援中のプランがありません</p>
+          <Link
+            href="/talents"
+            className="bg-sky-500 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-sky-600 transition-colors inline-block"
+          >
+            タレントを探す
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
           {subscriptions.map((sub) => {
-            const statusInfo = STATUS_LABELS[sub.status] ?? STATUS_LABELS.active
+            const statusInfo = STATUS_CONFIG[sub.status] ?? STATUS_CONFIG.active
             return (
-              <Card key={sub.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Talent Image */}
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-muted flex items-center justify-center">
-                      {sub.talent?.cover_image_url ? (
-                        <img
-                          src={sub.talent.cover_image_url}
-                          alt={sub.talent.name ?? ""}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-2xl">🌿</span>
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <Link
-                          href={`/talents/${sub.talent?.id}`}
-                          className="font-semibold hover:text-primary transition-colors"
-                        >
-                          {sub.talent?.name ?? "—"}
-                        </Link>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${statusInfo.color}`}>
-                          {statusInfo.label}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{sub.plan?.name ?? "—"}</p>
-                      <p className="text-sm font-medium mt-1">
-                        ¥{(sub.plan?.price ?? 0).toLocaleString()}
-                        {sub.plan?.billing_cycle && ` / ${CYCLE_LABELS[sub.plan.billing_cycle] ?? sub.plan.billing_cycle}`}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        開始: {new Date(sub.created_at).toLocaleDateString("ja-JP")}
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2 sm:flex-col sm:items-end">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/community/${sub.talent?.id}`}>サロンへ</Link>
-                      </Button>
-                      {sub.status === "active" && (
-                        <Button variant="ghost" size="sm" className="text-muted-foreground text-xs">
-                          解約
-                        </Button>
-                      )}
-                    </div>
+              <div
+                key={sub.id}
+                className="rounded-2xl bg-white border border-slate-100 shadow-lg shadow-slate-200/50 p-6 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+              >
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {/* Talent Image */}
+                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 flex items-center justify-center">
+                    {sub.talent?.cover_image_url ? (
+                      <img
+                        src={sub.talent.cover_image_url}
+                        alt={sub.talent.name ?? ""}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl">🌿</span>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <Link
+                        href={`/talents/${sub.talent?.id}`}
+                        className="font-semibold text-slate-800 hover:text-sky-600 transition-colors"
+                      >
+                        {sub.talent?.name ?? "—"}
+                      </Link>
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${statusInfo.bg} ${statusInfo.text}`}>
+                        {statusInfo.label}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-500">{sub.plan?.name ?? "—"}</p>
+                    <p className="text-sm font-semibold text-slate-700 mt-1">
+                      ¥{(sub.plan?.price ?? 0).toLocaleString()}
+                      {sub.plan?.billing_cycle && (
+                        <span className="font-normal text-slate-500"> / {CYCLE_LABELS[sub.plan.billing_cycle] ?? sub.plan.billing_cycle}</span>
+                      )}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1.5">
+                      開始: {new Date(sub.created_at).toLocaleDateString("ja-JP")}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 sm:flex-col sm:items-end justify-end">
+                    <Link
+                      href={`/community/${sub.talent?.id}`}
+                      className="border border-slate-200 text-slate-700 text-sm font-medium px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors whitespace-nowrap"
+                    >
+                      サロンへ
+                    </Link>
+                    {sub.status === "active" && (
+                      <button className="text-slate-400 text-xs hover:text-red-500 transition-colors">
+                        解約
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             )
           })}
         </div>
